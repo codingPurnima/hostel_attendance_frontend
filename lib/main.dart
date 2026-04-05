@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hostel_attendance_frontend/screens/common/register_screen.dart';
+import 'package:hostel_attendance_frontend/screens/common/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
           behavior: SnackBarBehavior.fixed,
         ),
       ),
-      home: RegisterScreen(),
+      home: SplashScreen(),
     );
   }
 }
