@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         appBarTheme: AppBarTheme(
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 6, 24, 39),
-        toolbarHeight: 100,
+        toolbarHeight: 85,
         titleTextStyle: TextStyle(
           color: Colors.white,
           fontSize: 45,
@@ -50,6 +50,11 @@ class MyApp extends StatelessWidget {
           backgroundColor: Color(0xFF0E2A47),
           behavior: SnackBarBehavior.fixed,
         ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: const Color.fromARGB(255, 6, 24, 39),
+          selectedItemColor: Colors.amber,
+          unselectedItemColor: Colors.white,
+        )
       ),
       home: SplashScreen(),
     );
