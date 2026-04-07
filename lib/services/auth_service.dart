@@ -19,16 +19,20 @@ class AuthService {
   }
 
   // ================= REGISTER =================
-  Future<bool> register(
-      {required String name, required String email, required String password, required String room}) async {
-      final response = await http.post(
+  Future<bool> register({
+    required String name,
+    required String email,
+    required String password,
+    required String room,
+  }) async {
+    final response = await http.post(
       Uri.parse("$baseUrl/auth/register"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "name": name,
         "room": room,
         "email": email,
-        "password": password,        
+        "password": password,
       }),
     );
 
@@ -40,10 +44,7 @@ class AuthService {
     final response = await http.post(
       Uri.parse("$baseUrl/auth/login"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "email": email,
-        "password": password,
-      }),
+      body: jsonEncode({"email": email, "password": password}),
     );
 
     if (response.statusCode == 200) {
@@ -51,11 +52,13 @@ class AuthService {
 
       final accessToken = data["access_token"];
       final refreshToken = data["refresh_token"];
+      final hasFace = data["has_face"];
 
       final prefs = await SharedPreferences.getInstance();
 
       await prefs.setString("access_token", accessToken);
       await prefs.setString("refresh_token", refreshToken);
+      await prefs.setBool("has_face", hasFace);
 
       _accessToken = accessToken;
       _refreshToken = refreshToken;
@@ -111,6 +114,17 @@ class AuthService {
     return null;
   }
 
+  Future<void> saveHasFace(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('has_face', value);
+  }
+
+  Future<bool> getHasFace() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('has_face') ?? false;
+  }
+  
+  
   // ================= GETTERS =================
   static String? get accessToken => _accessToken;
   static String? get refreshToken => _refreshToken;
