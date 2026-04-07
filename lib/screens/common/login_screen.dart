@@ -27,13 +27,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (result != null) {
         final accessToken = result["access_token"];
+        final bool hasFace = result["has_face"];
         // final role = result["role"]; LATER
 
         if (accessToken != null) {
           Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const StudentMainScreen()),
-  );
+            context,
+            MaterialPageRoute(builder: (context) => const StudentMainScreen()),
+          );
         }
       } else {
         ScaffoldMessenger.of(
@@ -77,21 +78,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        hintText: "you@yourid.com",
-                      ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return "Please enter your email id";
-                        }
-                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                          return "Invalid email id";
-                        }
-                        return null;
-                      },
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      hintText: "you@yourid.com",
                     ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Please enter your email id";
+                      }
+                      if (!RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      ).hasMatch(value)) {
+                        return "Invalid email id";
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 9),
 
                   TextFormField(
