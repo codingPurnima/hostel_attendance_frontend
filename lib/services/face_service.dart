@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io'; // gives access to File class
 
 import 'package:http/http.dart' as http;
@@ -10,7 +11,7 @@ class FaceService {
   }); //will be passed when creating the object later
 
   // takes captured photo and jwt token; returns true is success, false otherwise
-  Future<bool> registerFace(File imageFile, String token) async {
+  Future<void> registerFace(File imageFile, String token) async {
     // creates a POST request of the type multipart/form-data
     var request = http.MultipartRequest(
       'POST',
@@ -29,7 +30,13 @@ class FaceService {
     var response = await request
         .send(); // actually sends data to backend; and gets a streamed response (streams are chunks of data)
 
-    return response.statusCode == 200;
+    if (response.statusCode == 200){
+      print("Face registered successfully");
+
+    }
+    else {
+      print("Failed to register face");
+    }
   }
 
   Future<Map<String, dynamic>?> verifyFace(File imageFile, String token) async {
@@ -44,7 +51,7 @@ class FaceService {
       await http.MultipartFile.fromPath('file', imageFile.path),
     );
 
-// upto here, everything same as register
+    // upto here, everything same as register
     var response = await request
         .send(); // image and token go over network, /verify endpoint is triggered, it receives request- now in backend:
     // 1. first of all, authentication happens, current_user = Depends(get_current_user); This: extracts token, validates user, loads user from DB
@@ -57,4 +64,37 @@ class FaceService {
     }
     return null;
   }
+
+  Future<Map<String, dynamic>?> markAttendance(
+    File imageFile,
+    String token,
+    String ssid,   // send WiFi SSID
+  ) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/attendance/mark'),
+    );
+
+    request.headers['Authorization'] = 'Bearer $token';
+
+    // file
+    request.files.add(
+      await http.MultipartFile.fromPath('file', imageFile.path),
+    );
+
+    // ssid field (IMPORTANT)
+    request.fields['ssid'] = ssid;
+
+    var response = await request.send();
+
+    final resBody = await response.stream.bytesToString();
+
+    if (response.statusCode == 200) {
+      return jsonDecode(resBody);
+    } else {
+      return {"error": "Request failed"};
+    }
+  }
 }
+
+
