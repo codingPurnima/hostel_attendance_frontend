@@ -32,7 +32,6 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: onItemTapped,
-        selectedItemColor: const Color(0xFF061827),
         items: widget.navItems,
       ),
     );

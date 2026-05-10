@@ -54,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } else {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text("User exists already")));
+        ).showSnackBar(const SnackBar(content: Text("An Error Occurred")));
       }
     }
   }

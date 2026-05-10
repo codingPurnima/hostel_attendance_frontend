@@ -49,10 +49,10 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-
+      print("LOGIN RESPONSE: $data");
       final accessToken = data["access_token"];
       final refreshToken = data["refresh_token"];
-      final hasFace = data["has_face"];
+      final hasFace = data["user"]["has_face_registered"] == true;
 
       final prefs = await SharedPreferences.getInstance();
 
@@ -114,7 +114,7 @@ class AuthService {
     return null;
   }
 
-  Future<void> saveHasFace(bool value) async {
+  Future<void> setHasFace(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('has_face', value);
   }
