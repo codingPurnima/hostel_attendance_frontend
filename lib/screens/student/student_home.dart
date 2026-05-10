@@ -15,8 +15,6 @@ class _StudentHomeState extends State<StudentHome> {
   bool? hasFace;
   final ImagePicker _picker = ImagePicker();
 
-  final int studentId = 1;
-
   @override
   void initState() {
     super.initState();
@@ -30,8 +28,16 @@ class _StudentHomeState extends State<StudentHome> {
     });
   }
 
+  // Future<File?> captureImage() async {
+  //   final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+
+  //   if (photo == null) return null;
+
+  //   return File(photo.path);
+  // }
+
   Future<File?> captureImage() async {
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    final XFile? photo = await _picker.pickImage(source: ImageSource.gallery);
 
     if (photo == null) return null;
 
@@ -42,8 +48,10 @@ class _StudentHomeState extends State<StudentHome> {
     final image = await captureImage();
     if (image == null) return;
 
+    final token = AuthService.accessToken!;
+
     final result = await FaceService.registerFace(
-      studentId: studentId,
+      token: token,
       imageFile: image,
     );
     // update UI after success
@@ -59,7 +67,7 @@ class _StudentHomeState extends State<StudentHome> {
     } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Face registration failed")));
+      ).showSnackBar(SnackBar(content: Text(result["message"])));
     }
   }
 
@@ -67,23 +75,22 @@ class _StudentHomeState extends State<StudentHome> {
     final image = await captureImage();
     if (image == null) return;
 
+    final token = AuthService.accessToken!;
+
     final result = await FaceService.markAttendance(
-      studentId: studentId,
+      token: token,
       imageFile: image,
+      ssid: "LNCTGH-FL1",
     );
 
     if (result["success"]) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Attendance marked successfully"),
-        ),
+        const SnackBar(content: Text("Attendance marked successfully")),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result["message"]),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(result["message"])));
     }
   }
 
@@ -97,9 +104,15 @@ class _StudentHomeState extends State<StudentHome> {
       appBar: AppBar(title: Text("Home")),
       body: Center(
         child: hasFace!
-        ? ElevatedButton(onPressed: handleMarkAttendance, child: const Text("Mark Attendance"))
-        : ElevatedButton(onPressed: handleRegisterFace, child: const Text("Register Face")),
-      )
+            ? ElevatedButton(
+                onPressed: handleMarkAttendance,
+                child: const Text("Mark Attendance"),
+              )
+            : ElevatedButton(
+                onPressed: handleRegisterFace,
+                child: const Text("Register Face"),
+              ),
+      ),
     );
   }
 }
