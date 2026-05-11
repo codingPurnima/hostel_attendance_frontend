@@ -11,14 +11,12 @@ class AuthService {
 
   static bool get isLoggedIn => _accessToken != null;
 
-  // ================= LOAD TOKENS =================
   Future<void> loadTokens() async {
     final prefs = await SharedPreferences.getInstance();
     _accessToken = prefs.getString("access_token");
     _refreshToken = prefs.getString("refresh_token");
   }
 
-  // ================= REGISTER =================
   Future<bool> register({
     required String name,
     required String email,
@@ -39,7 +37,6 @@ class AuthService {
     return response.statusCode == 201;
   }
 
-  // ================= LOGIN =================
   Future<Map<String, dynamic>?> login(String email, String password) async {
     final response = await http.post(
       Uri.parse("$baseUrl/auth/login"),
@@ -69,8 +66,7 @@ class AuthService {
     return null;
   }
 
-  // ================= LOGOUT =================
-  Future<void> logout() async {
+  static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.clear();
@@ -79,7 +75,6 @@ class AuthService {
     _refreshToken = null;
   }
 
-  // ================= REFRESH TOKEN =================
   Future<String?> refreshAccessToken() async {
     // use memory first
     String? refreshToken = _refreshToken;
@@ -123,8 +118,7 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('has_face') ?? false;
   }
-  
-  
+   
   // ================= GETTERS =================
   static String? get accessToken => _accessToken;
   static String? get refreshToken => _refreshToken;
