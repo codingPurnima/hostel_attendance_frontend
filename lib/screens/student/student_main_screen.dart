@@ -10,7 +10,7 @@ class StudentMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainScreen(
-      screens: const [StudentHome(), ShowHistory(), ShowProfile()], navItems: const [
+      screens: const [StudentHome(), HistoryScreen(), ProfileScreen()], navItems: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
         BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
