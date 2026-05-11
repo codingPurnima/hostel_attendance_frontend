@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hostel_attendance_frontend/services/auth_service.dart';
@@ -30,9 +32,7 @@ class _StudentHomeState extends State<StudentHome> {
 
   // Future<File?> captureImage() async {
   //   final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-
   //   if (photo == null) return null;
-
   //   return File(photo.path);
   // }
 
@@ -71,16 +71,51 @@ class _StudentHomeState extends State<StudentHome> {
     }
   }
 
+  Future<String> getCurrentSSID() async {
+    try {
+      await Permission.location.request();
+
+      await Permission.nearbyWifiDevices.request();
+
+      final info = NetworkInfo();
+      String? ssid = await info.getWifiName();
+      print("RAW SSID: $ssid");
+
+      if (ssid == null) {
+        return "";
+      }
+      ssid = ssid.replaceAll('"', '').trim();
+      if (ssid.toLowerCase().contains("unknown")) {
+        return "";
+      }
+      return ssid;
+    } catch (e) {
+      print("SSID ERROR: $e");
+      return "";
+    }
+  }
+
   Future<void> handleMarkAttendance() async {
     final image = await captureImage();
     if (image == null) return;
 
     final token = AuthService.accessToken!;
+    final ssid = await getCurrentSSID();
+    print("CURRENT SSID: $ssid");
+
+    if (ssid.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Could not detect WiFi network. Try reconnecting"),
+        ),
+      );
+      return;
+    }
 
     final result = await FaceService.markAttendance(
       token: token,
       imageFile: image,
-      ssid: "LNCTGH-FL1",
+      ssid: ssid,
     );
 
     if (result["success"]) {
