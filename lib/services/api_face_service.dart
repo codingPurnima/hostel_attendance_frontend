@@ -25,7 +25,6 @@ class FaceService {
         ),
       );
 
-
       print("REQUEST URL: $uri");
       print("IMAGE PATH: ${imageFile.path}");
       print("TOKEN: $token");
@@ -44,17 +43,16 @@ class FaceService {
       } else {
         return {
           "success": false,
-          "message": data["error"] ?? data["detail"] ?? "Face registration failed",
+          "message":
+              data["error"] ?? data["detail"] ?? "Face registration failed",
         };
       }
     } catch (e) {
-          print("EXCEPTION: $e");
+      print("EXCEPTION: $e");
 
       return {"success": false, "message": e.toString()};
     }
   }
-
-  // VERIFY FACE
 
   static Future<Map<String, dynamic>> verifyFace({
     required int studentId,
@@ -94,8 +92,6 @@ class FaceService {
     }
   }
 
-  // MARK ATTENDANCE
-
   static Future<Map<String, dynamic>> markAttendance({
     required String token,
     required File imageFile,
@@ -119,14 +115,14 @@ class FaceService {
       );
 
       print("MARK ATTENDANCE URL: $uri");
-    print("SSID: $ssid");
+      print("SSID: $ssid");
 
       var streamedResponse = await request.send();
 
       var response = await http.Response.fromStream(streamedResponse);
 
       print("STATUS CODE: ${response.statusCode}");
-    print("RESPONSE BODY: ${response.body}");
+      print("RESPONSE BODY: ${response.body}");
 
       final data = jsonDecode(response.body);
 
@@ -135,22 +131,26 @@ class FaceService {
       } else {
         return {
           "success": false,
-          "message": data["error"] ?? "Attendance marking failed",
+          "message": data["detail"] ?? "Attendance marking failed",
         };
       }
     } catch (e) {
-
       print("ATTENDANCE ERROR: $e");
       return {"success": false, "message": e.toString()};
     }
   }
 
-
-  static Future<Map<String, dynamic>> getAttendance(int studentId) async {
+  static Future<Map<String, dynamic>> getAttendance({
+    required String token,
+  }) async {
     try {
       final response = await http.get(
-        Uri.parse("$baseUrl/attendance/student/$studentId"),
+        Uri.parse("$baseUrl/student/attendance"),
+        headers: {"Authorization": "Bearer $token"},
       );
+
+      print("ATTENDANCE STATUS: ${response.statusCode}");
+      print("ATTENDANCE BODY: ${response.body}");
 
       final data = jsonDecode(response.body);
 
@@ -163,7 +163,45 @@ class FaceService {
         };
       }
     } catch (e) {
+      print("Attendance error: $e");
       return {"success": false, "message": e.toString()};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getProfile({
+    required String token,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/student/profile"),
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      print("PROFILE STATUS: ${response.statusCode}");
+      print("PROFILE BODY: ${response.body}");
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return {
+          "success": true,
+          "data": data,
+        };
+      } else {
+        return {
+          "success": false,
+          "message":
+              data["detail"] ??
+              "Failed to fetch profile",
+        };
+      }
+    } catch (e) {
+      return {
+        "success": false,
+        "message": e.toString(),
+      };
     }
   }
 }
