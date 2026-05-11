@@ -62,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Create account")),
+      appBar: AppBar(title: FittedBox(fit: BoxFit.scaleDown, child: Text("Create account"))),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
