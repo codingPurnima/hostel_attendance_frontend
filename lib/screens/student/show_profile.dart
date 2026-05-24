@@ -16,6 +16,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic>? profileData;
   String? errorMessage;
 
+
   @override
   void initState() {
     super.initState();
@@ -50,14 +51,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void logout() async {
-    await AuthService.logout();
-    if (!mounted) return;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_)=>const LoginScreen()),
-      (route)=> false,
+  Future<void> _handleLogout(BuildContext context) async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // cancel
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // confirm
+              },
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
     );
+    if (shouldLogout != true) return;
+    try {
+      await AuthService.logout();
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => LoginScreen()),
+        (route) => false,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Center(child: Text("Failed to logout. Please Retry")),
+        ),
+      );
+    }
   }
 
   @override
@@ -66,8 +104,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: FittedBox(fit: BoxFit.scaleDown, child: Text("Student Profile")),
         actions: [
-          IconButton(icon: Icon(Icons.logout), onPressed: logout,)
-        ],
+          IconButton(
+            icon: Icon(Icons.logout), 
+            onPressed: () async {
+              await _handleLogout(context);
+              },
+            )
+          ],
       ),
 
       body: isLoading
