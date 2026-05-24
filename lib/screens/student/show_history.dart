@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hostel_attendance_frontend/services/api_face_service.dart';
@@ -25,7 +26,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.initState();
     loadAttendance();
 
-    timer = Timer.periodic(const Duration(seconds: 5), (_) => loadAttendance());
+    timer = Timer.periodic(
+      const Duration(seconds: 10),
+      (_) => loadAttendance(silent: true),
+    );
   }
 
   @override
@@ -34,18 +38,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.dispose();
   }
 
-  Future<void> loadAttendance() async {
-    setState(() {
-      isLoading = true;
-    });
+  Future<void> loadAttendance({bool silent = false}) async {
+    if (!silent) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     try {
       final token = AuthService.accessToken!;
       final result = await FaceService.getAttendance(token: token);
       if (result["success"]) {
-        setState(() {
-          attendanceData = result["data"];
-          errorMessage = null;
-        });
+        final newData = result["data"];
+        if(jsonEncode(newData)!= jsonEncode(attendanceData)){
+          setState(() {
+            attendanceData = result["data"];
+            errorMessage = null;
+          });
+        }
       } else {
         setState(() {
           errorMessage = result["message"];
@@ -78,7 +87,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           : attendanceData.isEmpty
           ? const Center(child: Text("No attendance records found"))
           : RefreshIndicator(
-              onRefresh: loadAttendance,
+              onRefresh: () => loadAttendance(),
               child: Padding(
                 padding: const EdgeInsets.all(16),
 
