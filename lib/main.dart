@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
 
 
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          type: BottomNavigationBarType.fixed,
           backgroundColor: const Color.fromARGB(255, 6, 24, 39),
           selectedItemColor: Colors.amber,
           unselectedItemColor: Colors.white,
