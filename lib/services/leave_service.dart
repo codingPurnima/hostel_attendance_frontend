@@ -1,0 +1,39 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class LeaveService {
+  static const String baseUrl = "http://10.0.2.2:8000";
+
+  static Future<Map<String, dynamic>> getMyLeaves({
+    required String token,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/leave/my-leaves"),
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return {
+          "success": true,
+          "data": data,
+        };
+      } else {
+        return {
+          "success": false,
+          "message": "Failed to fetch leaves",
+        };
+      }
+    } catch (e) {
+      return {
+        "success": false,
+        "message": e.toString(),
+      };
+    }
+  }   
+
+}
