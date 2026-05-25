@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 // MainScreen is the Widget; holds configuration (data) like screens and navItems; MainScreen = Blueprint + Inputs
 class MainScreen extends StatefulWidget {
+  final String token;
   final List<Widget> screens;
   final List<BottomNavigationBarItem> navItems;
-  const MainScreen({super.key, required this.screens, required this.navItems})
+  const MainScreen({super.key, required this.token, required this.screens, required this.navItems})
     : assert(
         screens.length == navItems.length,
         'screens and navItems must have the same length',
