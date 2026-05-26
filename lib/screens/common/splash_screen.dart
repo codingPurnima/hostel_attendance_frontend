@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_attendance_frontend/screens/common/login_screen.dart';
 import 'package:hostel_attendance_frontend/screens/student/student_main_screen.dart';
+import 'package:hostel_attendance_frontend/screens/warden/warden_dashboard.dart';
 import 'package:hostel_attendance_frontend/services/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await authService.loadTokens();
 
     String? token = AuthService.accessToken;
-    // String? role = AuthService.role; LATER
+    String? role = AuthService.role; 
 
     // If access token missing, try refreshing
     token ??= await authService.refreshAccessToken();
@@ -35,10 +36,18 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
 
     if (AuthService.isLoggedIn) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const StudentMainScreen()),
-      );
+      if(role.toString()== 'warden'){
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WardenDashboard()),
+            );
+          }
+          else{
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const StudentMainScreen()),
+            );
+          }
     }
     else {
       Navigator.pushReplacement(

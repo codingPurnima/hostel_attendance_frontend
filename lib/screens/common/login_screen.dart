@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_attendance_frontend/screens/common/register_screen.dart';
 import 'package:hostel_attendance_frontend/screens/student/student_main_screen.dart';
+import 'package:hostel_attendance_frontend/screens/warden/warden_dashboard.dart';
 import 'package:hostel_attendance_frontend/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,13 +30,21 @@ class _LoginScreenState extends State<LoginScreen> {
         print("Access token: ${result["access_token"]}");
         final accessToken = result["access_token"];
         // final bool hasFace = result["has_face"];
-        // final role = result["role"]; LATER
+        final role = result["user"]["role"]; //LATER
 
         if (accessToken != null) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const StudentMainScreen()),
-          );
+          if(role.toString()== 'warden'){
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WardenDashboard()),
+            );
+          }
+          else{
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const StudentMainScreen()),
+            );
+          }          
         }
       } else {
         ScaffoldMessenger.of(
