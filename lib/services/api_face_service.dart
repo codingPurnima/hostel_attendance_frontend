@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:hostel_attendance_frontend/services/api_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 
 class FaceService {
-  static const String baseUrl = "http://10.0.2.2:8000";
+  static const String baseUrl = ApiService.baseUrl;
 
   static Future<Map<String, dynamic>> registerFace({
     required String token,
