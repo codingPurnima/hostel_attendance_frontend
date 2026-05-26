@@ -61,4 +61,37 @@ class LeaveService {
       return {"success": false, "message": e.toString()};
     }
   }
+
+  static Future<Map<String, dynamic>> cancelLeave({
+    required String token,
+    required int leaveId
+  }) async{
+    try {
+      final response = await http.delete(
+        Uri.parse("$baseUrl/leave/cancel-leave/$leaveId"),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+      );
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return {
+          "success": true,
+          "message": data["message"],
+        };
+      } else {
+        return {
+          "success": false,
+          "message": data["error"] ?? "Failed to cancel leave",
+        };
+      }
+    } catch(e){
+      return {
+        "success": false,
+        "message": e.toString(),
+      };
+    }
+  }
 }
