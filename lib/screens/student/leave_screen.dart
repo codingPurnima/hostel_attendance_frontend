@@ -54,7 +54,58 @@ class _LeaveScreenState extends State<LeaveScreen> {
               child: ListView.builder(
                 itemCount: leaves.length,
                 itemBuilder: (context, index) {
-                  return LeaveCard(leave: leaves[index]);
+                  final leave = leaves[index];
+                  return LeaveCard(
+                    leave: leave,
+                    onTap: leave.status.toLowerCase() == "pending"
+                        ? () async {
+                            final shouldCancel = await showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Cancel Leave"),
+                                content: const Text(
+                                  "Are you sure you want to cancel this leave?",
+                                ),
+
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: const Text("No"),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: const Text("Yes"),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (shouldCancel == true) {
+                              final result = await LeaveService.cancelLeave(
+                                token: widget.token,
+                                leaveId: leave.id,
+                              );
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(result["message"])),
+                              );
+
+                              if (result["success"]) {
+                                fetchLeaves();
+                              }
+                            }
+                          }
+                        : () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "Only pending leaves can be cancelled",
+                                ),
+                              ),
+                            );
+                          },
+                  );
                 },
               ),
             ),
