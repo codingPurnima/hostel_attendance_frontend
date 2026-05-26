@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hostel_attendance_frontend/services/leave_service.dart';
 import 'package:hostel_attendance_frontend/widgets/leave_model.dart';
 import 'package:hostel_attendance_frontend/widgets/build_leave_card.dart';
+import 'package:hostel_attendance_frontend/screens/student/create_leave_screen.dart';
 
 class LeaveScreen extends StatefulWidget {
   final String token;
@@ -57,7 +58,39 @@ class _LeaveScreenState extends State<LeaveScreen> {
                 },
               ),
             ),
-      
+
+      floatingActionButton: Padding(
+        padding: EdgeInsetsGeometry.fromLTRB(30, 0, 5, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton(
+              heroTag: "sortBtn",
+              onPressed: () {
+                // sorting logic
+              },
+              child: Icon(Icons.sort),
+            ),
+
+            // Create Leave FAB
+            FloatingActionButton(
+              heroTag: "createBtn",
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CreateLeaveScreen(token: widget.token),
+                  ),
+                );
+                if (result == true) {
+                  fetchLeaves();
+                }
+              },
+              child: Icon(Icons.add),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
