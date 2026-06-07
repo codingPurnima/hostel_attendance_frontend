@@ -49,7 +49,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       final result = await FaceService.getAttendance(token: token);
       if (result["success"]) {
         final newData = result["data"];
-        if(jsonEncode(newData)!= jsonEncode(attendanceData)){
+        if (jsonEncode(newData) != jsonEncode(attendanceData)) {
           setState(() {
             attendanceData = result["data"];
             errorMessage = null;
@@ -75,10 +75,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text("Attendance History"),
-        ),
+        elevation: 0,
+        centerTitle: true,
+        title: FittedBox(fit: BoxFit.scaleDown, child: const Text("Attendance History")),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -90,15 +89,25 @@ class _HistoryScreenState extends State<HistoryScreen> {
               onRefresh: () => loadAttendance(),
               child: Padding(
                 padding: const EdgeInsets.all(16),
-
-                child: ListView.builder(
+                child: ListView.separated(
                   itemCount: attendanceData.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final item = attendanceData[index];
 
                     return Card(
+                      elevation: 1.5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       child: ListTile(
-                        leading: const Icon(Icons.check_circle),
+                        leading: const CircleAvatar(
+                          backgroundColor: Color(0xFFE8F5E9),
+                          child: Icon(
+                            Icons.check_circle,
+                            color: Color(0xFF2E7D32),
+                          ),
+                        ),
                         title: Text("Date: ${item["date"]}"),
                         subtitle: Text("Time: ${item["timestamp"]}"),
                       ),

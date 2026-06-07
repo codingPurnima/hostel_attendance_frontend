@@ -16,7 +16,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic>? profileData;
   String? errorMessage;
 
-
   @override
   void initState() {
     super.initState();
@@ -55,15 +54,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: FittedBox(fit: BoxFit.scaleDown, child: Text("Student Profile")),
+        elevation: 0,
+        centerTitle: true,
+        title: FittedBox(fit: BoxFit.scaleDown, child: const Text("Student Profile")),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout), 
+            icon: const Icon(Icons.logout),
             onPressed: () async {
               await LogoutHelper.logout(context);
-              },
-            )
-          ],
+            },
+          ),
+        ],
       ),
 
       body: isLoading
@@ -76,6 +77,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Card(
+                    elevation: 1.5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Center(
@@ -90,11 +95,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            Text("Name: ${profileData!["name"]}"),
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: const Color(0xFFE0E0E0),
+                                  child: Text(
+                                    (profileData!['name'] ?? "").isNotEmpty
+                                        ? profileData!["name"]![0]
+                                              .toString()
+                                              .toUpperCase()
+                                        : "",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 6, 24, 39),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Name: ${profileData!["name"]}"),
+                                      const SizedBox(height: 8),
+                                      Text("Email: ${profileData!["email"]}"),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 16),
                             Text("ID: ${profileData!["id"]}"),
-                            const SizedBox(height: 8),
-                            Text("Email: ${profileData!["email"]}"),
                             const SizedBox(height: 8),
                             Text("Room: ${profileData!["room"]}"),
                             const SizedBox(height: 8),
