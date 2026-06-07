@@ -6,15 +6,31 @@ import 'api_service.dart';
 class AuthService {
   static String? _accessToken;
   static String? _refreshToken;
+  static String? _role;
 
   final String baseUrl = ApiService.baseUrl;
 
+  // ================= GETTERS =================
+  static String? get accessToken => _accessToken;
+  static String? get refreshToken => _refreshToken;
+  static String? get role => _role;
   static bool get isLoggedIn => _accessToken != null;
 
   Future<void> loadTokens() async {
     final prefs = await SharedPreferences.getInstance();
+
     _accessToken = prefs.getString("access_token");
     _refreshToken = prefs.getString("refresh_token");
+    _role = prefs.getString("role");
+  }
+
+  Future<String?> getValidAccessToken() async {
+    if (_accessToken != null) return _accessToken;
+
+    final prefs = await SharedPreferences.getInstance();
+    _accessToken = prefs.getString("access_token");
+
+    return _accessToken;
   }
 
   Future<bool> register({
@@ -46,19 +62,22 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print("LOGIN RESPONSE: $data");
+
       final accessToken = data["access_token"];
       final refreshToken = data["refresh_token"];
       final hasFace = data["user"]["has_face_registered"] == true;
+      final role = data["user"]["role"];
 
       final prefs = await SharedPreferences.getInstance();
 
       await prefs.setString("access_token", accessToken);
       await prefs.setString("refresh_token", refreshToken);
       await prefs.setBool("has_face", hasFace);
+      await prefs.setString("role", role);
 
       _accessToken = accessToken;
       _refreshToken = refreshToken;
+      _role = data["user"]["role"];
 
       return data;
     }
@@ -69,10 +88,13 @@ class AuthService {
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
 
-    await prefs.clear();
+    await prefs.remove("access_token");
+    await prefs.remove("refresh_token");
+    await prefs.remove("role");
 
     _accessToken = null;
     _refreshToken = null;
+    _role = null;
   }
 
   Future<String?> refreshAccessToken() async {
@@ -118,8 +140,4 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('has_face') ?? false;
   }
-   
-  // ================= GETTERS =================
-  static String? get accessToken => _accessToken;
-  static String? get refreshToken => _refreshToken;
 }
