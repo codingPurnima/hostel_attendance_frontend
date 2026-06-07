@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hostel_attendance_frontend/screens/common/login_screen.dart';
 import 'package:hostel_attendance_frontend/services/api_face_service.dart';
 import 'package:hostel_attendance_frontend/services/auth_service.dart';
+import 'package:hostel_attendance_frontend/widgets/logout_helper.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -51,53 +51,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _handleLogout(BuildContext context) async {
-    final shouldLogout = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Confirm Logout'),
-          content: const Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // cancel
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(true); // confirm
-              },
-              child: const Text(
-                'Logout',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-    if (shouldLogout != true) return;
-    try {
-      await AuthService.logout();
-
-      if (!mounted) return;
-
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => LoginScreen()),
-        (route) => false,
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Center(child: Text("Failed to logout. Please Retry")),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           IconButton(
             icon: Icon(Icons.logout), 
             onPressed: () async {
-              await _handleLogout(context);
+              await LogoutHelper.logout(context);
               },
             )
           ],
