@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Center(
             child: Text(
-              "Hostel\nAttendance",
+              " HostelLog  ",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
