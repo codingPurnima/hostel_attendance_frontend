@@ -159,16 +159,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     ElevatedButton(
                       onPressed: _submitForm,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 6, 24, 39),
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 5,
-                        ),
-                        fixedSize: Size(125, 15),
-                        elevation: 5,
-                      ),
                       child: const Text(
                         "Register",
                         style: TextStyle(

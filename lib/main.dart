@@ -56,9 +56,16 @@ class MyApp extends StatelessWidget {
 
 
         elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(const Color.fromARGB(255, 6, 24, 39)),
-            foregroundColor: WidgetStateProperty.all(Colors.white),
+          style: ElevatedButton.styleFrom(
+            elevation: 5,
+            minimumSize: Size(0, 52),
+            backgroundColor:const Color.fromARGB(255, 6, 24, 39),
+            foregroundColor: Colors.white,
+            textStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            )
           )
         ),
 
@@ -82,9 +89,8 @@ class MyApp extends StatelessWidget {
             fontSize: 15,
             fontWeight: FontWeight.w300,
           ),
-        ),
-
-
+        ),       
+        
         scaffoldBackgroundColor: Color(0xFFE2E8F0),
       ),
       home: SplashScreen(),
