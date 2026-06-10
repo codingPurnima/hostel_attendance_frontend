@@ -24,36 +24,39 @@ class StudentsCard extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          DataTable(
-            columns: const [
-              DataColumn(label: Text("ID")),
-              DataColumn(label: Text("Room")),
-              DataColumn(label: Text("Email")),
-              DataColumn(label: Text("Status")),
-            ],
-            rows: students.map((student) {
-
-              return DataRow(
-                cells: [
-
-                  DataCell(
-                    Text(student["id"].toString()),
-                  ),
-
-                  DataCell(
-                    Text(student["room"].toString()),
-                  ),
-
-                  DataCell(
-                    Text(student["email"].toString()),
-                  ),
-
-                  DataCell(
-                    Text(student["status"].toString()),
-                  ),
-                ],
-              );
-            }).toList(),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text("ID")),
+                DataColumn(label: Text("Room")),
+                DataColumn(label: Text("Email")),
+                DataColumn(label: Text("Status")),
+              ],
+              rows: students.map((student) {
+            
+                return DataRow(
+                  cells: [
+            
+                    DataCell(
+                      Text(student["id"].toString()),
+                    ),
+            
+                    DataCell(
+                      Text(student["room"].toString()),
+                    ),
+            
+                    DataCell(
+                      Text(student["email"].toString()),
+                    ),
+            
+                    DataCell(
+                      Text(student["status"].toString()),
+                    ),
+                  ],
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
