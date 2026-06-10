@@ -36,6 +36,8 @@ class LeaveRequestsCard extends StatelessWidget {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
+              dataRowMinHeight: 70,
+              dataRowMaxHeight: 70,
               columns: const [
                 DataColumn(label: Text("Student ID")),
                 DataColumn(label: Text("Name")),
