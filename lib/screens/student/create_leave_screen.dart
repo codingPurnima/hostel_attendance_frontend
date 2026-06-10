@@ -91,7 +91,7 @@ class _CreateLeaveScreenState extends State<CreateLeaveScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Create Leave")),
+      appBar: AppBar(title: FittedBox(fit: BoxFit.scaleDown, child: Text("Create Leave"))),
       body: Padding(padding: const EdgeInsets.all(16),
       child: Form(
         key: _formKey,
