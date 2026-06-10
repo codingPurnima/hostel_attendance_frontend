@@ -94,7 +94,7 @@ class _WardenDashboardState extends State<WardenDashboard> {
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
-        title: const Text("HOSTEL ADMIN", style: TextStyle(fontSize: 40),),
+        title: Text("HOSTEL ADMIN", style: TextStyle(fontSize: isMobile? 24: 40),),
         automaticallyImplyLeading: isMobile,
       ),
       // show Sidebar as a Drawer on mobile, keep it inline on larger screens
