@@ -30,17 +30,9 @@ class _StudentHomeState extends State<StudentHome> {
     });
   }
 
-  // Future<File?> captureImage() async {
-  //   final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-  //   if (photo == null) return null;
-  //   return File(photo.path);
-  // }
-
   Future<File?> captureImage() async {
-    final XFile? photo = await _picker.pickImage(source: ImageSource.gallery);
-
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
     if (photo == null) return null;
-
     return File(photo.path);
   }
 
@@ -49,6 +41,9 @@ class _StudentHomeState extends State<StudentHome> {
     if (image == null) return;
 
     final token = AuthService.accessToken!;
+    print("IMAGE PATH: ${image.path}");
+    print("EXISTS: ${await image.exists()}");
+    print("SIZE: ${await image.length()}");
 
     final result = await FaceService.registerFace(
       token: token,
@@ -111,6 +106,9 @@ class _StudentHomeState extends State<StudentHome> {
       );
       return;
     }
+    print("IMAGE PATH: ${image.path}");
+    print("EXISTS: ${await image.exists()}");
+    print("SIZE: ${await image.length()}");
 
     final result = await FaceService.markAttendance(
       token: token,
