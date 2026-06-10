@@ -70,14 +70,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               SizedBox(height: 30),
               CircleAvatar(
-                radius: 75,
-                backgroundColor: Colors.grey[300],
-                child: const Text(
-                  "Add Logo",
-                  style: TextStyle(fontSize: 18),
-                  textAlign: TextAlign.center,
+                  radius: 75,
+                  backgroundColor: Colors.grey[300],
+                  backgroundImage: AssetImage("assets/images/HostelAttendanceAppLogo.jpeg"),
                 ),
-              ),
               SizedBox(height: 30),
               Form(
                 key: _formKey,

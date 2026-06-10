@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 CircleAvatar(
                   radius: 75,
                   backgroundColor: Colors.grey[300],
-                  child: Text("Logo"),
+                  backgroundImage: AssetImage("assets/images/HostelAttendanceAppLogo.jpeg"),
                 ),
                 SizedBox(height: 30),
                 Form(
