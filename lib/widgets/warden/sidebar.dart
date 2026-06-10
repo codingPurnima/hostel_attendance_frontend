@@ -16,7 +16,7 @@ class Sidebar extends StatelessWidget {
         // ensure sidebar content starts flush at the top so AppBar and Sidebar align
         children: [
           // small top padding inside tiles keeps content from colliding with status/app bar
-          const SizedBox(height: 8),
+          const SizedBox(height: 50),
 
           sidebarTile(
             context,
@@ -46,6 +46,7 @@ class Sidebar extends StatelessWidget {
             onTap: () => onSelect("returns"),
             isSelected: selected == "returns",
           ),
+           
           sidebarTile(
             context,
             Icons.logout,
