@@ -55,7 +55,8 @@ class LeaveRequestsCard extends StatelessWidget {
                     DataCell(Text(request["end_date"].toString())),
                     DataCell(Text(request["status"].toString())),
                     DataCell(
-                      Row(
+                      Wrap(
+                        spacing: 8,
                         children: [
                           ElevatedButton(
                             onPressed: () => onApprove(request["id"]),
