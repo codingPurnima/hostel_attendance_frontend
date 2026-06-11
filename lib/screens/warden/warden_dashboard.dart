@@ -18,9 +18,6 @@ class WardenDashboard extends StatefulWidget {
 class _WardenDashboardState extends State<WardenDashboard> {
   final WardenService service = WardenService();
 
-  // TEMP TOKEN
-  String token = "";
-
   // which detail view to show: 'students' | 'attendance' | 'leave' | 'returns'
   String selectedView = 'students';
 
@@ -30,6 +27,7 @@ class _WardenDashboardState extends State<WardenDashboard> {
   List<dynamic> returnRequests = [];
 
   bool isLoading = true;
+  bool isFetching = false;
 
   Timer? pollingTimer;
 
@@ -53,14 +51,25 @@ class _WardenDashboardState extends State<WardenDashboard> {
   }
 
   Future<void> loadDashboard() async {
+    if (isFetching) return;
+    isFetching = true;
+
     try {
-      final studentsData = await service.getStudents();
+      final results = await Future.wait([
+        service.getStudents(),
+        service.getTodayAttendance(),
+        service.getLeaveRequests(),
+        service.getReturnRequests(),
+      ]);
+      final studentsData = results[0];
 
-      final attendanceData = await service.getTodayAttendance();
+      final attendanceData = results[1];
 
-      final leaveData = await service.getLeaveRequests();
+      final leaveData = results[2];
 
-      final returnData = await service.getReturnRequests();
+      final returnData = results[3];
+
+      if (!mounted) return;
 
       setState(() {
         students = studentsData;
@@ -71,7 +80,16 @@ class _WardenDashboardState extends State<WardenDashboard> {
         isLoading = false;
       });
     } catch (e) {
-      debugPrint(e.toString());
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      isFetching = false;
     }
   }
 
@@ -94,7 +112,10 @@ class _WardenDashboardState extends State<WardenDashboard> {
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
-        title: Text("HOSTEL ADMIN", style: TextStyle(fontSize: isMobile? 24: 40),),
+        title: Text(
+          "HOSTEL ADMIN",
+          style: TextStyle(fontSize: isMobile ? 24 : 40),
+        ),
         automaticallyImplyLeading: isMobile,
       ),
       // show Sidebar as a Drawer on mobile, keep it inline on larger screens
