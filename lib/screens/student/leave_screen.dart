@@ -96,6 +96,44 @@ class _LeaveScreenState extends State<LeaveScreen> {
                               }
                             }
                           }
+                        : leave.status.toLowerCase() == "approved"
+                        ? () async {
+                            final shouldCancel = await showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Returning Early?"),
+                                content: const Text(
+                                  "Request warden to end leave period?",
+                                ),
+
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: const Text("No"),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: const Text("Yes"),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (shouldCancel == true) {
+                              final result = await LeaveService.earlyReturn(
+                                token: widget.token,
+                              );
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(result["message"])),
+                              );
+
+                              if (result["success"]) {
+                                fetchLeaves();
+                              }
+                            }
+                          }
                         : () {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
