@@ -25,6 +25,9 @@ class _StudentHomeState extends State<StudentHome> {
 
   Future<void> loadUserState() async {
     final value = await AuthService().getHasFace();
+
+    if (!mounted) return;
+
     setState(() {
       hasFace = value;
     });
@@ -40,7 +43,8 @@ class _StudentHomeState extends State<StudentHome> {
     final image = await captureImage();
     if (image == null) return;
 
-    final token = AuthService.accessToken!;
+    final token = AuthService.accessToken;
+    if (token == null) return;
     print("IMAGE PATH: ${image.path}");
     print("EXISTS: ${await image.exists()}");
     print("SIZE: ${await image.length()}");
@@ -52,6 +56,7 @@ class _StudentHomeState extends State<StudentHome> {
     // update UI after success
     if (result["success"]) {
       await AuthService().setHasFace(true);
+      if (!mounted) return;
 
       setState(() {
         hasFace = true;
@@ -94,7 +99,9 @@ class _StudentHomeState extends State<StudentHome> {
     final image = await captureImage();
     if (image == null) return;
 
-    final token = AuthService.accessToken!;
+    final token = AuthService.accessToken;
+    if (token == null) return;
+
     final ssid = await getCurrentSSID();
     print("CURRENT SSID: $ssid");
 

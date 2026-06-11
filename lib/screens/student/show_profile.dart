@@ -24,9 +24,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> loadProfile() async {
     try {
-      final token = AuthService.accessToken!;
+      final token = AuthService.accessToken;
+      if (token == null) return;
 
       final result = await FaceService.getProfile(token: token);
+      if (!mounted) return;
 
       if (result["success"]) {
         setState(() {
@@ -35,6 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           isLoading = false;
         });
       } else {
+        if (!mounted) return;
         setState(() {
           errorMessage = result["message"];
 
@@ -42,6 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         errorMessage = e.toString();
 
@@ -56,7 +60,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        title: FittedBox(fit: BoxFit.scaleDown, child: const Text("Student Profile")),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: const Text("Student Profile"),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),

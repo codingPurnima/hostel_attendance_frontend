@@ -4,21 +4,17 @@ import 'package:hostel_attendance_frontend/screens/student/leave_screen.dart';
 import 'package:hostel_attendance_frontend/screens/student/show_history.dart';
 import 'package:hostel_attendance_frontend/screens/student/show_profile.dart';
 import 'package:hostel_attendance_frontend/screens/student/student_home.dart';
-import 'package:hostel_attendance_frontend/services/auth_service.dart';
 
 class StudentMainScreen extends StatelessWidget {
   const StudentMainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final token = AuthService.accessToken!;
-
     return MainScreen(
-      token: token,
       screens: [
         StudentHome(),
         HistoryScreen(),
-        LeaveScreen(token: token),
+        LeaveScreen(),
         ProfileScreen(),
       ],
       navItems: const [

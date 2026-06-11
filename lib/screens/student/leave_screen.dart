@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hostel_attendance_frontend/services/auth_service.dart';
 import 'package:hostel_attendance_frontend/services/leave_service.dart';
 import 'package:hostel_attendance_frontend/widgets/leave_model.dart';
 import 'package:hostel_attendance_frontend/widgets/build_leave_card.dart';
 import 'package:hostel_attendance_frontend/screens/student/create_leave_screen.dart';
 
 class LeaveScreen extends StatefulWidget {
-  final String token;
-
-  const LeaveScreen({super.key, required this.token});
+  const LeaveScreen({super.key});
 
   @override
   State<LeaveScreen> createState() => _LeaveScreenState();
@@ -23,7 +22,12 @@ class _LeaveScreenState extends State<LeaveScreen> {
   }
 
   Future<void> fetchLeaves() async {
-    final result = await LeaveService.getMyLeaves(token: widget.token);
+    final token = AuthService.accessToken;
+    if (token == null) {
+      return;
+    }
+
+    final result = await LeaveService.getMyLeaves(token: token);
     if (result["success"]) {
       setState(() {
         leaves = (result["data"] as List)
@@ -82,8 +86,10 @@ class _LeaveScreenState extends State<LeaveScreen> {
                               ),
                             );
                             if (shouldCancel == true) {
+                              final token = AuthService.accessToken;
+                              if (token == null) return;
                               final result = await LeaveService.cancelLeave(
-                                token: widget.token,
+                                token: token,
                                 leaveId: leave.id,
                               );
 
@@ -98,7 +104,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                           }
                         : leave.status.toLowerCase() == "approved"
                         ? () async {
-                            final shouldCancel = await showDialog(
+                            final shouldReturn = await showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: const Text("Returning Early?"),
@@ -120,9 +126,11 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                 ],
                               ),
                             );
-                            if (shouldCancel == true) {
+                            if (shouldReturn == true) {
+                              final token = AuthService.accessToken;
+                              if (token == null) return;
                               final result = await LeaveService.earlyReturn(
-                                token: widget.token,
+                                token: token,
                               );
 
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -168,7 +176,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => CreateLeaveScreen(token: widget.token),
+                    builder: (_) => const CreateLeaveScreen(),
                   ),
                 );
                 if (result == true) {

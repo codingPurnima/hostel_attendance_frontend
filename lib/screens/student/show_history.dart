@@ -45,8 +45,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
       });
     }
     try {
-      final token = AuthService.accessToken!;
+      final token = AuthService.accessToken;
+      if (token == null) return;
       final result = await FaceService.getAttendance(token: token);
+      if (!mounted) return;
+      
       if (result["success"]) {
         final newData = result["data"];
         if (jsonEncode(newData) != jsonEncode(attendanceData)) {
@@ -56,11 +59,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
           });
         }
       } else {
+        if (!mounted) return;
         setState(() {
           errorMessage = result["message"];
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         errorMessage = e.toString();
       });
@@ -77,7 +82,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        title: FittedBox(fit: BoxFit.scaleDown, child: const Text("Attendance History")),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: const Text("Attendance History"),
+        ),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
