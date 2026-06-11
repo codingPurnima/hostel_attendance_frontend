@@ -95,4 +95,49 @@ class LeaveService {
       };
     }
   }
+
+  static Future<Map<String, dynamic>> earlyReturn({
+    required String token,
+  }) async {
+
+    try {
+
+      final response = await http.post(
+
+        Uri.parse(
+          "$baseUrl/leave/early-return",
+        ),
+
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+
+        return {
+          "success": true,
+          "message": data["message"],
+        };
+
+      } else {
+
+        return {
+          "success": false,
+          "message":
+              data["detail"] ??
+              "Failed to submit request",
+        };
+      }
+
+    } catch (e) {
+
+      return {
+        "success": false,
+        "message": e.toString(),
+      };
+    }
+  }
 }
